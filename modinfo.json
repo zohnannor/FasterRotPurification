@@ -1,0 +1,10 @@
+{
+    "id": "zohnannor.fasterrotpurification",
+    "name": "Faster Rot Purification",
+    "version": "1.0.0",
+    "target_game_version": "v1.11.8",
+    "authors": "zohnannor",
+    "description": "Makes the rotted rooms purify faster when the Void Weaver ability is obtained.\n\nYou can control the purification multiplier in the mod's Remix options (possible values: from 0.5 (twice as long) to 100.0 (100 times faster)).\n\nhttps://github.com/zohnannor/FasterRotPurification",
+    "requirements": [],
+    "requirements_names": []
+}
