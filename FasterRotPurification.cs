@@ -13,7 +13,7 @@ namespace FasterRotPurification;
 public class FasterRotPurificationMain : BaseUnityPlugin {
     public const string PLUGIN_GUID = "zohnannor.fasterrotpurification";
     public const string PLUGIN_NAME = "Faster Rot Purification";
-    public const string PLUGIN_VERSION = "1.0.0";
+    public const string PLUGIN_VERSION = "1.0.1";
 
     private bool initDone = false;
     public static FasterRotPurificationOptions Options;
@@ -42,7 +42,10 @@ public class FasterRotPurificationMain : BaseUnityPlugin {
         initDone = true;
     }
 
-    private void Room_UpdateSentientRotEffect(On.Room.orig_UpdateSentientRotEffect orig, Room self) {
+    private void Room_UpdateSentientRotEffect(
+        On.Room.orig_UpdateSentientRotEffect orig,
+        Room self
+    ) {
         AdjustPurificationIntensity(self);
         orig(self);
     }
@@ -51,24 +54,29 @@ public class FasterRotPurificationMain : BaseUnityPlugin {
         if (
             self.game == null
                 || !self.game.IsStorySession
+                || self.game.GetStorySession.finalWarpSequenceStarted
+                || self.game.cameras == null
+                || self.game.cameras.Length == 0
+                || self.game.cameras[0] == null
+                || !self.BeingViewed
                 || self.world?.regionState == null
                 || self.abstractRoom == null
                 || !self.didFirstSentientRotUpdate
                 || !self.game.GetStorySession.saveState.miscWorldSaveData.hasVoidWeaverAbility
+                || (self.abstractRoom.gate && Region.IsWatcherVanillaRegion(self.world.name))
+                || !self.world.regionState.sentientRotProgression.TryGetValue(
+                       self.abstractRoom.name,
+                       out var prog
+                   )
         ) {
             return;
         }
 
-        var region = self.world.regionState;
-        if (!region.sentientRotProgression.TryGetValue(self.abstractRoom.name, out var prog)) {
-            return;
-        }
-
         float m = Options.Multiplier.Value;
-        if (Mathf.Approximately(m, 1f)) {
+        if (Mathf.Approximately(m, 1f) || self.ticker % 8 != 0) {
             return;
         }
-        float perTick = 0.005f * (m - 1f) / 8f;
+        float perTick = 0.005f * (m - 1f);
 
         prog.rotIntensity = Mathf.Clamp(prog.rotIntensity - perTick, 0f, 1f);
     }
@@ -80,7 +88,7 @@ public class FasterRotPurificationOptions : OptionInterface {
     private OpTab mainTab;
     private OpUpdown _multiplier;
 
-    private const string desc = "Multiplier for the Void Weaver ability rot purification effect. 1.0 = vanilla, 0.5 = twice as long, 10.0 = ten times faster.";
+    private const string desc = "Multiplier for the Void Weaver ability rot purification effect. 1.0 = vanilla, 0.5 = twice as long, 10.0 = ten times faster, 0.0 = frozen.";
 
     public FasterRotPurificationOptions() {
         Multiplier = config.Bind(
@@ -88,7 +96,7 @@ public class FasterRotPurificationOptions : OptionInterface {
             1f,
             new ConfigurableInfo(
                 desc,
-                new ConfigAcceptableRange<float>(0.5f, 100f)
+                new ConfigAcceptableRange<float>(0f, 100f)
             )
         );
     }

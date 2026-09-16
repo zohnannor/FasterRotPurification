@@ -1,10 +1,14 @@
 {
     "id": "zohnannor.fasterrotpurification",
     "name": "Faster Rot Purification",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "target_game_version": "v1.11.8",
     "authors": "zohnannor",
-    "description": "Makes the rotted rooms purify faster when the Void Weaver ability is obtained.\n\nYou can control the purification multiplier in the mod's Remix options (possible values: from 0.5 (twice as long) to 100.0 (100 times faster)).\n\nhttps://github.com/zohnannor/FasterRotPurification",
-    "requirements": [],
-    "requirements_names": []
+    "description": "Makes the rotted rooms purify faster when the Void Weaver ability is obtained.\n\nYou can control the purification multiplier in the mod's Remix options.\nPossible values: from 0.0 to 100.0 with 1.0 being the default (i.e. vanilla behavior).\nValues above 1.0 will make the rot purification effect faster, with 100.0 being effectively instant.\nContrary to the mod's name, you can also set this to a number less than 1.0 to make the effect slower or even freeze it by setting it to 0.0.\nTechnically, this is cheating, as you will be able to complete the Sentient Rot ending after getting Void Weaver ability, which is not intended in the game, but it's up to you to use it.\n\nhttps://github.com/zohnannor/FasterRotPurification",
+    "requirements": [
+        "watcher"
+    ],
+    "requirements_names": [
+        "The Watcher"
+    ]
 }
